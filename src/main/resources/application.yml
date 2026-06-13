@@ -1,0 +1,49 @@
+# =============================================================
+# SERVER CONFIGURATION
+# =============================================================
+server:
+  port: 8080                          # App runs on http://localhost:8080
+
+# =============================================================
+# DATABASE CONFIGURATION (PostgreSQL)
+# =============================================================
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/career_os   # Database URL
+    username: postgres                                 # Default PostgreSQL user
+    password: Aman@746                                 # Change this to your password
+    driver-class-name: org.postgresql.Driver
+
+  # =============================================================
+  # JPA / HIBERNATE CONFIGURATION
+  #
+  # ddl-auto options:
+  #   - none     → do nothing (production)
+  #   - validate → only check if schema matches entities
+  #   - update   → auto-create/update tables (good for development)
+  #   - create   → drop and recreate tables on every startup
+  #
+  # We use "update" for development so that:
+  #   - Tables are created automatically from @Entity classes
+  #   - New fields are added without manual SQL
+  #   - Existing data is preserved across restarts
+  #
+  # show-sql: true   → prints every SQL query to the console (for learning)
+  # format_sql: true → makes those SQL logs readable
+  # =============================================================
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# =============================================================
+# APPLICATION CONFIGURATION
+# =============================================================
+app:
+  jwt:
+    secret: my-super-secret-key-for-jwt-which-should-be-at-least-256-bits-long-for-hmac-sha
+    expiration-ms: 86400000             # 24 hours in milliseconds
