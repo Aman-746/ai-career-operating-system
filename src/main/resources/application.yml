@@ -9,9 +9,9 @@ server:
 # =============================================================
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/career_os   # Database URL
-    username: postgres                                 # Default PostgreSQL user
-    password: Aman@746                                 # Change this to your password
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/career_os}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   # =============================================================
@@ -45,5 +45,5 @@ spring:
 # =============================================================
 app:
   jwt:
-    secret: my-super-secret-key-for-jwt-which-should-be-at-least-256-bits-long-for-hmac-sha
+    secret: ${JWT_SECRET:a-very-long-and-secure-random-secret-key-for-local-dev}
     expiration-ms: 86400000             # 24 hours in milliseconds
