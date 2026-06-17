@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
         return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handles our custom ResourceNotFoundException.
+     * Returns a 404 Not Found.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handles our custom InvalidRequestException.
+     * Returns a 400 Bad Request.
+     */
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidRequest(InvalidRequestException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles file uploads larger than the configured multipart limit
+     * (spring.servlet.multipart.max-file-size). Returns a 400 Bad Request
+     * instead of letting it fall through as a 500.
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, String>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
+        return new ResponseEntity<>(Map.of("error", "Resume file must not exceed 5MB"), HttpStatus.BAD_REQUEST);
     }
 
     /**

@@ -40,6 +40,16 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  # =============================================================
+  # FILE UPLOAD CONFIGURATION
+  # Caps a single resume upload at 5MB. Anything larger is rejected
+  # before it reaches our own size check in OnboardingService.
+  # =============================================================
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
 # =============================================================
 # APPLICATION CONFIGURATION
 # =============================================================
@@ -47,3 +57,5 @@ app:
   jwt:
     secret: ${JWT_SECRET:a-very-long-and-secure-random-secret-key-for-local-dev}
     expiration-ms: 86400000             # 24 hours in milliseconds
+  resume:
+    upload-dir: ${RESUME_UPLOAD_DIR:uploads/resumes}   # local-disk storage for now
