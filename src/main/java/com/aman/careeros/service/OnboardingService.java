@@ -87,13 +87,16 @@ public class OnboardingService {
 
         String storagePath = fileStorageService.store(file, user.getId(), extension);
 
-        Resume resume = Resume.builder()
-                .user(user)
-                .originalFilename(file.getOriginalFilename())
-                .storagePath(storagePath)
-                .contentType(file.getContentType())
-                .fileSizeBytes(file.getSize())
-                .build();
+        Resume resume = resumeRepository.findTopByUserIdOrderByUploadedAtDesc(user.getId())
+                .orElseGet(() -> Resume.builder().user(user).build());
+
+        resume.setOriginalFilename(file.getOriginalFilename());
+        resume.setStoragePath(storagePath);
+        resume.setContentType(file.getContentType());
+        resume.setFileSizeBytes(file.getSize());
+        resume.setDetectedSkills(null);
+        resume.setExperienceLevel(null);
+
         resumeAnalysisService.analyzeAndPopulate(resume, profile.getYearsOfExperience());
         resumeRepository.save(resume);
 

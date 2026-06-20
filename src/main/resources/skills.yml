@@ -1,0 +1,940 @@
+# Skill taxonomy for resume analysis.
+#
+# canonical:  the display name returned in API responses
+# category:   grouping label (used for future filtering / role inference)
+# aliases:    additional strings that map to this skill (matched case-insensitively)
+#             In NORMAL mode, the canonical name is also matched.
+#             In STRICT mode, only the aliases below are matched — the canonical
+#             bare token is too ambiguous (e.g. "go" fires on "category", "django").
+# matchMode:  NORMAL (default) | STRICT
+
+skills:
+
+  # ── Programming Languages ──────────────────────────────────────────────────
+
+  - canonical: "Java"
+    category: "Languages"
+    aliases:
+      - "java 8"
+      - "java 11"
+      - "java 17"
+      - "java 21"
+      - "core java"
+
+  - canonical: "Python"
+    category: "Languages"
+    aliases:
+      - "python3"
+      - "python 3"
+      - "cpython"
+
+  - canonical: "JavaScript"
+    category: "Languages"
+    aliases:
+      - "js"
+      - "ecmascript"
+      - "es6"
+      - "es2015"
+      - "es2017"
+      - "vanilla js"
+      - "vanilla javascript"
+
+  - canonical: "TypeScript"
+    category: "Languages"
+    aliases:
+      - "ts"
+
+  - canonical: "Go"
+    category: "Languages"
+    matchMode: STRICT
+    aliases:
+      - "golang"
+      - "go lang"
+      - "go language"
+      - "go programming"
+
+  - canonical: "Rust"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "C++"
+    category: "Languages"
+    aliases:
+      - "cpp"
+      - "c plus plus"
+
+  - canonical: "C#"
+    category: "Languages"
+    aliases:
+      - "c sharp"
+      - "csharp"
+
+  - canonical: "Swift"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Kotlin"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Scala"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Ruby"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "PHP"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "R"
+    category: "Languages"
+    matchMode: STRICT
+    aliases:
+      - "r language"
+      - "r programming"
+      - "rlang"
+
+  - canonical: "Dart"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Elixir"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Lua"
+    category: "Languages"
+    aliases: []
+
+  - canonical: "Groovy"
+    category: "Languages"
+    aliases: []
+
+  # ── Frontend ───────────────────────────────────────────────────────────────
+
+  - canonical: "React"
+    category: "Frontend"
+    aliases:
+      - "reactjs"
+      - "react.js"
+      - "react js"
+      - "react hooks"
+      - "react context"
+
+  - canonical: "Vue"
+    category: "Frontend"
+    aliases:
+      - "vuejs"
+      - "vue.js"
+      - "vue js"
+      - "vue 3"
+      - "vue 2"
+      - "nuxt"
+      - "nuxt.js"
+      - "nuxtjs"
+
+  - canonical: "Angular"
+    category: "Frontend"
+    aliases:
+      - "angularjs"
+      - "angular.js"
+      - "angular 2"
+      - "angular 14"
+      - "angular 15"
+      - "angular 16"
+      - "angular 17"
+
+  - canonical: "Next.js"
+    category: "Frontend"
+    aliases:
+      - "nextjs"
+      - "next js"
+      - "next.js"
+
+  - canonical: "Svelte"
+    category: "Frontend"
+    aliases:
+      - "sveltekit"
+      - "svelte kit"
+
+  - canonical: "Redux"
+    category: "Frontend"
+    aliases:
+      - "redux toolkit"
+      - "react redux"
+      - "redux-toolkit"
+      - "rtk query"
+
+  - canonical: "GraphQL"
+    category: "Frontend"
+    aliases:
+      - "gql"
+      - "graph ql"
+      - "graphql api"
+      - "apollo graphql"
+      - "apollo client"
+
+  - canonical: "HTML"
+    category: "Frontend"
+    aliases:
+      - "html5"
+      - "html 5"
+
+  - canonical: "CSS"
+    category: "Frontend"
+    aliases:
+      - "css3"
+      - "css 3"
+      - "flexbox"
+      - "css grid"
+
+  - canonical: "SCSS"
+    category: "Frontend"
+    aliases:
+      - "sass"
+      - "scss"
+      - "sass/scss"
+      - "less css"
+
+  - canonical: "Tailwind CSS"
+    category: "Frontend"
+    aliases:
+      - "tailwind"
+      - "tailwindcss"
+      - "tailwind css"
+
+  - canonical: "Webpack"
+    category: "Frontend"
+    aliases:
+      - "webpack 5"
+
+  - canonical: "Vite"
+    category: "Frontend"
+    aliases:
+      - "vitejs"
+      - "vite.js"
+
+  - canonical: "Storybook"
+    category: "Frontend"
+    aliases: []
+
+  # ── Backend Frameworks ─────────────────────────────────────────────────────
+
+  - canonical: "Spring Boot"
+    category: "Backend"
+    aliases:
+      - "springboot"
+      - "spring-boot"
+      - "spring framework"
+      - "spring mvc"
+      - "spring data"
+      - "spring cloud"
+      - "spring security"
+
+  - canonical: "Node.js"
+    category: "Backend"
+    aliases:
+      - "nodejs"
+      - "node js"
+      - "node"
+
+  - canonical: "Express"
+    category: "Backend"
+    aliases:
+      - "express.js"
+      - "expressjs"
+
+  - canonical: "Django"
+    category: "Backend"
+    aliases:
+      - "django rest"
+      - "django rest framework"
+      - "drf"
+
+  - canonical: "Flask"
+    category: "Backend"
+    aliases: []
+
+  - canonical: "FastAPI"
+    category: "Backend"
+    aliases:
+      - "fast api"
+
+  - canonical: "Ruby on Rails"
+    category: "Backend"
+    aliases:
+      - "rails"
+      - "ror"
+
+  - canonical: "Nest.js"
+    category: "Backend"
+    aliases:
+      - "nestjs"
+      - "nest js"
+      - "nestjs framework"
+
+  - canonical: "gRPC"
+    category: "Backend"
+    aliases:
+      - "grpc"
+      - "protocol buffers"
+      - "protobuf"
+
+  - canonical: "Laravel"
+    category: "Backend"
+    aliases: []
+
+  - canonical: ".NET"
+    category: "Backend"
+    aliases:
+      - "asp.net"
+      - "aspnet"
+      - "dotnet"
+      - "dot net"
+      - ".net core"
+      - ".net framework"
+      - "asp net"
+
+  - canonical: "Gin"
+    category: "Backend"
+    matchMode: STRICT
+    aliases:
+      - "gin framework"
+      - "gin gonic"
+      - "gin-gonic"
+
+  # ── Databases ──────────────────────────────────────────────────────────────
+
+  - canonical: "SQL"
+    category: "Databases"
+    aliases:
+      - "relational database"
+      - "structured query language"
+      - "sql server"
+      - "t-sql"
+      - "tsql"
+
+  - canonical: "PostgreSQL"
+    category: "Databases"
+    aliases:
+      - "postgres"
+      - "psql"
+      - "postgre"
+
+  - canonical: "MySQL"
+    category: "Databases"
+    aliases:
+      - "my sql"
+      - "mysql 8"
+
+  - canonical: "MongoDB"
+    category: "Databases"
+    aliases:
+      - "mongo"
+      - "mongo db"
+
+  - canonical: "Redis"
+    category: "Databases"
+    aliases:
+      - "redis cache"
+      - "redis cluster"
+
+  - canonical: "Cassandra"
+    category: "Databases"
+    aliases:
+      - "apache cassandra"
+
+  - canonical: "DynamoDB"
+    category: "Databases"
+    aliases:
+      - "dynamo db"
+      - "amazon dynamodb"
+      - "aws dynamodb"
+
+  - canonical: "Elasticsearch"
+    category: "Databases"
+    aliases:
+      - "elastic search"
+      - "elastic stack"
+      - "opensearch"
+      - "open search"
+      - "elk stack"
+
+  - canonical: "SQLite"
+    category: "Databases"
+    aliases:
+      - "sqlite3"
+
+  - canonical: "Snowflake"
+    category: "Databases"
+    aliases:
+      - "snowflake data warehouse"
+
+  - canonical: "BigQuery"
+    category: "Databases"
+    aliases:
+      - "big query"
+      - "google bigquery"
+      - "google big query"
+
+  - canonical: "Oracle DB"
+    category: "Databases"
+    aliases:
+      - "oracle"
+      - "oracle database"
+      - "pl/sql"
+      - "plsql"
+
+  - canonical: "Neo4j"
+    category: "Databases"
+    aliases:
+      - "graph database"
+      - "cypher"
+
+  - canonical: "InfluxDB"
+    category: "Databases"
+    aliases:
+      - "influx db"
+      - "time series database"
+
+  - canonical: "Supabase"
+    category: "Databases"
+    aliases: []
+
+  # ── Cloud ──────────────────────────────────────────────────────────────────
+
+  - canonical: "AWS"
+    category: "Cloud"
+    aliases:
+      - "amazon web services"
+      - "amazon aws"
+      - "aws cloud"
+      - "ec2"
+      - "s3"
+      - "aws lambda"
+      - "lambda functions"
+      - "ecs"
+      - "eks"
+      - "cloudformation"
+      - "aws iam"
+      - "aws rds"
+      - "aws sqs"
+      - "aws sns"
+      - "aws cloudwatch"
+
+  - canonical: "GCP"
+    category: "Cloud"
+    aliases:
+      - "google cloud platform"
+      - "google cloud"
+      - "gcp cloud"
+      - "google kubernetes engine"
+      - "gke"
+      - "cloud run"
+      - "google cloud run"
+
+  - canonical: "Azure"
+    category: "Cloud"
+    aliases:
+      - "microsoft azure"
+      - "azure cloud"
+      - "ms azure"
+      - "azure devops"
+      - "azure functions"
+      - "aks"
+      - "azure kubernetes"
+
+  - canonical: "Cloudflare"
+    category: "Cloud"
+    aliases:
+      - "cloudflare workers"
+      - "cloudflare pages"
+
+  - canonical: "Vercel"
+    category: "Cloud"
+    aliases: []
+
+  - canonical: "Heroku"
+    category: "Cloud"
+    aliases: []
+
+  # ── DevOps & Infrastructure ────────────────────────────────────────────────
+
+  - canonical: "Docker"
+    category: "DevOps"
+    aliases:
+      - "dockerfile"
+      - "docker-compose"
+      - "docker compose"
+      - "containerization"
+      - "container orchestration"
+
+  - canonical: "Kubernetes"
+    category: "DevOps"
+    aliases:
+      - "k8s"
+      - "kube"
+      - "kubectl"
+      - "kubernetes cluster"
+      - "kubernetes operator"
+
+  - canonical: "Terraform"
+    category: "DevOps"
+    aliases:
+      - "terraform hcl"
+      - "hashicorp terraform"
+      - "infrastructure as code"
+      - "iac"
+
+  - canonical: "Ansible"
+    category: "DevOps"
+    aliases:
+      - "ansible playbook"
+      - "ansible automation"
+
+  - canonical: "Jenkins"
+    category: "DevOps"
+    aliases:
+      - "jenkins ci"
+      - "jenkins pipeline"
+      - "jenkinsfile"
+
+  - canonical: "GitHub Actions"
+    category: "DevOps"
+    aliases:
+      - "github actions"
+      - "github ci"
+      - "gh actions"
+
+  - canonical: "CircleCI"
+    category: "DevOps"
+    aliases:
+      - "circle ci"
+
+  - canonical: "ArgoCD"
+    category: "DevOps"
+    aliases:
+      - "argo cd"
+      - "argocd"
+      - "gitops"
+      - "argo workflows"
+
+  - canonical: "Helm"
+    category: "DevOps"
+    matchMode: STRICT
+    aliases:
+      - "helm charts"
+      - "helm chart"
+      - "kubernetes helm"
+
+  - canonical: "Linux"
+    category: "DevOps"
+    aliases:
+      - "ubuntu"
+      - "debian"
+      - "centos"
+      - "rhel"
+      - "red hat"
+      - "unix"
+      - "linux administration"
+
+  - canonical: "Nginx"
+    category: "DevOps"
+    aliases:
+      - "nginx server"
+      - "nginx proxy"
+
+  - canonical: "CI/CD"
+    category: "DevOps"
+    aliases:
+      - "cicd"
+      - "ci cd"
+      - "continuous integration"
+      - "continuous deployment"
+      - "continuous delivery"
+      - "continuous delivery pipeline"
+
+  - canonical: "Bash"
+    category: "DevOps"
+    aliases:
+      - "shell scripting"
+      - "shell script"
+      - "bash scripting"
+      - "bash script"
+
+  # ── Monitoring & Observability ─────────────────────────────────────────────
+
+  - canonical: "Prometheus"
+    category: "Monitoring"
+    aliases:
+      - "prometheus monitoring"
+
+  - canonical: "Grafana"
+    category: "Monitoring"
+    aliases: []
+
+  - canonical: "Datadog"
+    category: "Monitoring"
+    aliases:
+      - "data dog"
+
+  - canonical: "New Relic"
+    category: "Monitoring"
+    aliases:
+      - "newrelic"
+
+  - canonical: "Splunk"
+    category: "Monitoring"
+    aliases: []
+
+  - canonical: "OpenTelemetry"
+    category: "Monitoring"
+    aliases:
+      - "otel"
+      - "open telemetry"
+
+  # ── Data Engineering ───────────────────────────────────────────────────────
+
+  - canonical: "Apache Spark"
+    category: "Data"
+    aliases:
+      - "spark"
+      - "pyspark"
+      - "spark streaming"
+      - "spark sql"
+
+  - canonical: "Apache Kafka"
+    category: "Data"
+    aliases:
+      - "kafka"
+      - "kafka streams"
+      - "event streaming"
+
+  - canonical: "Apache Airflow"
+    category: "Data"
+    aliases:
+      - "airflow"
+      - "airflow dags"
+
+  - canonical: "dbt"
+    category: "Data"
+    matchMode: STRICT
+    aliases:
+      - "data build tool"
+      - "dbt core"
+      - "dbt cloud"
+
+  - canonical: "Hadoop"
+    category: "Data"
+    aliases:
+      - "apache hadoop"
+      - "hdfs"
+      - "mapreduce"
+
+  - canonical: "Apache Flink"
+    category: "Data"
+    aliases:
+      - "flink"
+      - "flink streaming"
+
+  - canonical: "Apache Hive"
+    category: "Data"
+    aliases:
+      - "hive"
+      - "hiveql"
+
+  # ── Machine Learning & AI ──────────────────────────────────────────────────
+
+  - canonical: "TensorFlow"
+    category: "ML/AI"
+    aliases:
+      - "tensorflow"
+      - "tensorflow 2"
+      - "tf2"
+      - "keras"
+
+  - canonical: "PyTorch"
+    category: "ML/AI"
+    aliases:
+      - "pytorch"
+      - "torch"
+
+  - canonical: "scikit-learn"
+    category: "ML/AI"
+    aliases:
+      - "sklearn"
+      - "scikit learn"
+
+  - canonical: "Pandas"
+    category: "ML/AI"
+    aliases:
+      - "pandas dataframe"
+      - "pandas library"
+
+  - canonical: "NumPy"
+    category: "ML/AI"
+    aliases:
+      - "numpy"
+
+  - canonical: "Jupyter"
+    category: "ML/AI"
+    aliases:
+      - "jupyter notebook"
+      - "jupyter lab"
+      - "jupyterlab"
+
+  - canonical: "MLflow"
+    category: "ML/AI"
+    aliases:
+      - "ml flow"
+      - "mlflow tracking"
+
+  - canonical: "LangChain"
+    category: "ML/AI"
+    aliases:
+      - "langchain"
+      - "lang chain"
+
+  - canonical: "Hugging Face"
+    category: "ML/AI"
+    aliases:
+      - "huggingface"
+      - "hf transformers"
+      - "transformers library"
+
+  - canonical: "OpenAI API"
+    category: "ML/AI"
+    matchMode: STRICT
+    aliases:
+      - "openai api"
+      - "gpt api"
+      - "chatgpt api"
+      - "openai"
+
+  - canonical: "RAG"
+    category: "ML/AI"
+    matchMode: STRICT
+    aliases:
+      - "retrieval augmented generation"
+      - "retrieval-augmented generation"
+
+  # ── Mobile ─────────────────────────────────────────────────────────────────
+
+  - canonical: "SwiftUI"
+    category: "Mobile"
+    aliases: []
+
+  - canonical: "UIKit"
+    category: "Mobile"
+    aliases: []
+
+  - canonical: "Jetpack Compose"
+    category: "Mobile"
+    matchMode: STRICT
+    aliases:
+      - "jetpack compose"
+      - "android compose"
+      - "compose ui"
+
+  - canonical: "Flutter"
+    category: "Mobile"
+    aliases: []
+
+  - canonical: "React Native"
+    category: "Mobile"
+    aliases:
+      - "react-native"
+
+  - canonical: "Android SDK"
+    category: "Mobile"
+    aliases:
+      - "android sdk"
+      - "android development"
+      - "android studio"
+
+  - canonical: "Xcode"
+    category: "Mobile"
+    aliases: []
+
+  - canonical: "Firebase"
+    category: "Mobile"
+    aliases:
+      - "google firebase"
+      - "firebase realtime"
+      - "firestore"
+
+  # ── QA & Testing ───────────────────────────────────────────────────────────
+
+  - canonical: "Selenium"
+    category: "QA"
+    aliases:
+      - "selenium webdriver"
+      - "selenium grid"
+
+  - canonical: "Cypress"
+    category: "QA"
+    aliases:
+      - "cypress.io"
+
+  - canonical: "Playwright"
+    category: "QA"
+    aliases: []
+
+  - canonical: "JUnit"
+    category: "QA"
+    aliases:
+      - "junit 4"
+      - "junit 5"
+      - "junit4"
+      - "junit5"
+
+  - canonical: "Postman"
+    category: "QA"
+    aliases:
+      - "postman api"
+
+  - canonical: "Jest"
+    category: "QA"
+    aliases:
+      - "jest testing"
+
+  - canonical: "TestNG"
+    category: "QA"
+    aliases:
+      - "test ng"
+
+  - canonical: "K6"
+    category: "QA"
+    matchMode: STRICT
+    aliases:
+      - "k6 load testing"
+      - "k6.io"
+
+  # ── Security ───────────────────────────────────────────────────────────────
+
+  - canonical: "OWASP"
+    category: "Security"
+    aliases:
+      - "owasp top 10"
+      - "owasp top ten"
+
+  - canonical: "OAuth"
+    category: "Security"
+    aliases:
+      - "oauth2"
+      - "oauth 2"
+      - "open authorization"
+      - "oauth 2.0"
+
+  - canonical: "JWT"
+    category: "Security"
+    aliases:
+      - "json web token"
+      - "json web tokens"
+
+  - canonical: "Penetration Testing"
+    category: "Security"
+    matchMode: STRICT
+    aliases:
+      - "penetration testing"
+      - "pentest"
+      - "pen testing"
+      - "ethical hacking"
+
+  # ── Architecture & Practices ───────────────────────────────────────────────
+
+  - canonical: "REST"
+    category: "Architecture"
+    aliases:
+      - "rest api"
+      - "restful"
+      - "restful api"
+      - "rest apis"
+      - "rest services"
+
+  - canonical: "Microservices"
+    category: "Architecture"
+    aliases:
+      - "microservice"
+      - "microservice architecture"
+
+  - canonical: "System Design"
+    category: "Architecture"
+    aliases:
+      - "distributed systems"
+      - "distributed computing"
+      - "scalable architecture"
+      - "high availability"
+      - "fault tolerance"
+
+  - canonical: "API Design"
+    category: "Architecture"
+    aliases:
+      - "api development"
+      - "api integration"
+
+  - canonical: "Event-Driven Architecture"
+    category: "Architecture"
+    aliases:
+      - "event driven"
+      - "event-driven"
+      - "pub/sub"
+      - "pubsub"
+      - "message queue"
+      - "message broker"
+
+  - canonical: "Domain-Driven Design"
+    category: "Architecture"
+    matchMode: STRICT
+    aliases:
+      - "ddd"
+      - "domain-driven design"
+      - "domain driven design"
+
+  - canonical: "Git"
+    category: "Practices"
+    aliases:
+      - "git version control"
+      - "version control"
+
+  - canonical: "GitHub"
+    category: "Practices"
+    aliases:
+      - "github.com"
+      - "github platform"
+
+  - canonical: "GitLab"
+    category: "Practices"
+    aliases:
+      - "gitlab ci"
+      - "gitlab platform"
+
+  - canonical: "Agile"
+    category: "Practices"
+    aliases:
+      - "agile methodology"
+      - "agile development"
+
+  - canonical: "Scrum"
+    category: "Practices"
+    aliases:
+      - "scrum master"
+      - "sprint planning"
+      - "scrum ceremonies"
+
+  - canonical: "TDD"
+    category: "Practices"
+    aliases:
+      - "test-driven development"
+      - "test driven development"
+
+  - canonical: "BDD"
+    category: "Practices"
+    aliases:
+      - "behavior-driven development"
+      - "behaviour-driven development"
+      - "cucumber"
+      - "gherkin"
