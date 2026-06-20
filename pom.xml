@@ -198,6 +198,17 @@
              Note: It is automatically disabled when running a fully 
              packaged JAR in production.
              ========================================================== -->
+        <!-- ==========================================================
+             9. APACHE PDFBOX
+             Used by ResumeAnalysisService to extract text from PDF resumes.
+             PDFBox 3.x is compatible with Java 21 and Spring Boot 3.x.
+             ========================================================== -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

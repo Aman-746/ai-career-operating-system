@@ -45,3 +45,12 @@ CREATE TABLE resumes (
 );
 
 CREATE INDEX idx_resumes_user_id ON resumes (user_id);
+
+-- MIGRATION NOTE (2026-06-19): Three analysis columns added to resumes.
+-- Hibernate ddl-auto=update will emit:
+--   ALTER TABLE resumes ADD COLUMN detected_skills  VARCHAR(1000);
+--   ALTER TABLE resumes ADD COLUMN detected_role    VARCHAR(100);
+--   ALTER TABLE resumes ADD COLUMN experience_level VARCHAR(20);
+-- All three are nullable, so the ALTER succeeds on tables with existing rows.
+-- Existing resume rows will have NULL values for these columns; analysis only
+-- runs for resumes uploaded after this change is deployed.

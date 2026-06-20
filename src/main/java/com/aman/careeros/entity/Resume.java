@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -46,4 +47,14 @@ public class Resume {
     @CreationTimestamp
     @Column(name = "uploaded_at", nullable = false, updatable = false)
     private LocalDateTime uploadedAt;
+
+    // --- Resume Analysis Fields (populated synchronously after upload) ---
+
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "detected_skills", length = 1000)
+    private List<String> detectedSkills;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "experience_level", length = 20)
+    private ExperienceLevel experienceLevel;
 }

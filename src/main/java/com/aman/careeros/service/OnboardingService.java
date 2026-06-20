@@ -40,6 +40,7 @@ public class OnboardingService {
     private final OnboardingProfileRepository onboardingProfileRepository;
     private final ResumeRepository resumeRepository;
     private final FileStorageService fileStorageService;
+    private final ResumeAnalysisService resumeAnalysisService;
 
     /**
      * Creates the onboarding profile on first call, or updates it on subsequent calls.
@@ -93,6 +94,7 @@ public class OnboardingService {
                 .contentType(file.getContentType())
                 .fileSizeBytes(file.getSize())
                 .build();
+        resumeAnalysisService.analyzeAndPopulate(resume, profile.getYearsOfExperience());
         resumeRepository.save(resume);
 
         profile.setStatus(OnboardingStatus.COMPLETED);
