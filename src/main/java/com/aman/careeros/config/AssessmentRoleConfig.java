@@ -1,206 +1,90 @@
 package com.aman.careeros.config;
 
+import com.aman.careeros.entity.AssessmentTopic;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.aman.careeros.entity.AssessmentTopic.*;
 
 /**
- * AssessmentRoleConfig - Maps each target role to its assessment configuration.
+ * AssessmentRoleConfig - Maps each launch role to its assessment configuration.
  *
- * Topics are derived from the targetRole only (V1 design decision). Current
- * role
- * is stored in OnboardingProfile for future gap analysis but does not affect
- * the assessment topic set in this version.
+ * Topics are derived from the targetRole only (Phase-1 design decision). The
+ * current role is stored in OnboardingProfile for future gap analysis but does
+ * not affect the assessment topic set in this version.
  *
- * The DEFAULT entry covers any role string that doesn't match the curated list,
- * so the endpoint never returns null config data.
+ * Availability model: ROLE_CONFIGS contains ONLY the launch roles. A role is
+ * assessable iff a config is present for it; {@link #getConfig} returns an empty
+ * Optional for every other role string (known non-launch role or unexpected
+ * free text), which the caller renders as a "coming soon" state. There is no
+ * silent DEFAULT fallback — an honest "coming soon" beats a misleading generic
+ * assessment.
+ *
+ * Reuse rule: a fixed 6 questions per topic, so every topic carries the same
+ * weight and denominator across roles. Total questionCount = topics * 6.
  */
 @Component
 public class AssessmentRoleConfig {
 
-        public record TopicConfig(List<String> topics, int questionCount, int estimatedMinutes) {
-        }
+    public record TopicConfig(List<AssessmentTopic> topics, int questionCount, int estimatedMinutes) {
+    }
 
-        private static final TopicConfig DEFAULT = new TopicConfig(
-                        List.of("Core Technical Concepts", "Problem Solving", "Communication",
-                                        "Professional Practices"),
-                        30, 20);
+    private static final Map<String, TopicConfig> ROLE_CONFIGS = Map.of(
 
-        private static final Map<String, TopicConfig> ROLE_CONFIGS = Map.ofEntries(
+            "Software Engineer", new TopicConfig(
+                    List.of(
+                            DATA_STRUCTURES_ALGORITHMS,
+                            OBJECT_ORIENTED_DESIGN,
+                            SYSTEM_DESIGN,
+                            DATABASES_AND_SQL,
+                            CONCURRENCY_AND_PARALLELISM),
+                    30, 20),
 
-                        Map.entry("Software Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Data Structures & Algorithms",
-                                                        "System Design",
-                                                        "Object-Oriented Design",
-                                                        "Databases & SQL",
-                                                        "Concurrency"),
-                                        30, 20)),
+            "Backend Engineer", new TopicConfig(
+                    List.of(
+                            DATA_STRUCTURES_ALGORITHMS,
+                            OBJECT_ORIENTED_DESIGN,
+                            SYSTEM_DESIGN,
+                            DATABASES_AND_SQL,
+                            API_AND_WEB_FUNDAMENTALS,
+                            CONCURRENCY_AND_PARALLELISM),
+                    36, 24),
 
-                        Map.entry("Frontend Engineer", new TopicConfig(
-                                        List.of(
-                                                        "JavaScript & TypeScript",
-                                                        "React Ecosystem",
-                                                        "CSS & Styling",
-                                                        "Browser APIs & Performance",
-                                                        "Accessibility"),
-                                        30, 20)),
+            "Full Stack Engineer", new TopicConfig(
+                    List.of(
+                            DATA_STRUCTURES_ALGORITHMS,
+                            SYSTEM_DESIGN,
+                            DATABASES_AND_SQL,
+                            API_AND_WEB_FUNDAMENTALS,
+                            FRONTEND_ENGINEERING,
+                            JAVASCRIPT_AND_TYPESCRIPT),
+                    36, 24),
 
-                        Map.entry("Backend Engineer", new TopicConfig(
-                                        List.of(
-                                                        "API Design",
-                                                        "Database Design",
-                                                        "System Design",
-                                                        "Security Fundamentals",
-                                                        "Distributed Systems"),
-                                        30, 20)),
+            "Frontend Engineer", new TopicConfig(
+                    List.of(
+                            DATA_STRUCTURES_ALGORITHMS,
+                            OBJECT_ORIENTED_DESIGN,
+                            API_AND_WEB_FUNDAMENTALS,
+                            FRONTEND_ENGINEERING,
+                            JAVASCRIPT_AND_TYPESCRIPT,
+                            TESTING_AND_CODE_QUALITY),
+                    36, 24));
 
-                        Map.entry("Full Stack Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Frontend Architecture",
-                                                        "Backend Architecture",
-                                                        "Database Design",
-                                                        "API Integration",
-                                                        "Deployment & DevOps"),
-                                        35, 23)),
+    /**
+     * Returns the assessment configuration for an assessable launch role, or an
+     * empty Optional for any role that is not yet assessable ("coming soon").
+     */
+    public Optional<TopicConfig> getConfig(String targetRole) {
+        return Optional.ofNullable(ROLE_CONFIGS.get(targetRole));
+    }
 
-                        Map.entry("Mobile Engineer (Android)", new TopicConfig(
-                                        List.of(
-                                                        "Kotlin & Jetpack Compose",
-                                                        "Android Architecture",
-                                                        "Background Processing",
-                                                        "App Performance",
-                                                        "Google Play Distribution"),
-                                        30, 20)),
-
-                        Map.entry("Mobile Engineer (iOS)", new TopicConfig(
-                                        List.of(
-                                                        "Swift & SwiftUI",
-                                                        "iOS Architecture Patterns",
-                                                        "UIKit",
-                                                        "App Performance",
-                                                        "App Store Distribution"),
-                                        30, 20)),
-
-                        Map.entry("DevOps / Platform Engineer", new TopicConfig(
-                                        List.of(
-                                                        "CI/CD Pipelines",
-                                                        "Docker & Kubernetes",
-                                                        "Infrastructure as Code",
-                                                        "Monitoring & Observability",
-                                                        "Cloud Platforms"),
-                                        30, 20)),
-
-                        Map.entry("Cloud Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Cloud Architecture",
-                                                        "Networking Fundamentals",
-                                                        "Infrastructure as Code",
-                                                        "Security & IAM",
-                                                        "Monitoring & Reliability"),
-                                        30, 20)),
-
-                        Map.entry("Site Reliability Engineer", new TopicConfig(
-                                        List.of(
-                                                        "System Reliability",
-                                                        "Incident Management",
-                                                        "Observability",
-                                                        "Capacity Planning",
-                                                        "Automation"),
-                                        30, 20)),
-
-                        Map.entry("ML / AI Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Machine Learning Fundamentals",
-                                                        "Deep Learning",
-                                                        "LLMs & Prompt Engineering",
-                                                        "Model Evaluation & Metrics",
-                                                        "MLOps"),
-                                        35, 25)),
-
-                        Map.entry("Data Scientist", new TopicConfig(
-                                        List.of(
-                                                        "Statistical Analysis",
-                                                        "Machine Learning",
-                                                        "Data Wrangling & EDA",
-                                                        "Experimentation & A/B Testing",
-                                                        "Data Visualization"),
-                                        35, 25)),
-
-                        Map.entry("Data Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Data Pipelines & ETL",
-                                                        "Data Warehousing",
-                                                        "Stream Processing",
-                                                        "SQL & Query Optimization",
-                                                        "Orchestration Tools"),
-                                        30, 20)),
-
-                        Map.entry("Product Manager", new TopicConfig(
-                                        List.of(
-                                                        "Product Strategy & Roadmapping",
-                                                        "User Research & Discovery",
-                                                        "Stakeholder Management",
-                                                        "Data-Driven Decision Making",
-                                                        "Go-to-Market Strategy"),
-                                        30, 20)),
-
-                        Map.entry("Business Analyst", new TopicConfig(
-                                        List.of(
-                                                        "Requirements Gathering",
-                                                        "Process Modeling",
-                                                        "Stakeholder Management",
-                                                        "Data Analysis",
-                                                        "Documentation"),
-                                        30, 20)),
-
-                        Map.entry("Engineering Manager", new TopicConfig(
-                                        List.of(
-                                                        "People Management & Growth",
-                                                        "Technical Leadership",
-                                                        "Delivery & Planning",
-                                                        "Hiring & Culture",
-                                                        "Cross-Functional Communication"),
-                                        30, 20)),
-
-                        Map.entry("Tech Lead", new TopicConfig(
-                                        List.of(
-                                                        "Technical Vision & Architecture",
-                                                        "Code Review & Quality",
-                                                        "Mentoring & Coaching",
-                                                        "Delivery Management",
-                                                        "Stakeholder Communication"),
-                                        30, 20)),
-
-                        Map.entry("Solutions Architect", new TopicConfig(
-                                        List.of(
-                                                        "System Design",
-                                                        "Cloud Architecture",
-                                                        "Integration Patterns",
-                                                        "Security",
-                                                        "Stakeholder Communication"),
-                                        30, 20)),
-
-                        Map.entry("QA Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Test Planning & Strategy",
-                                                        "Test Automation Frameworks",
-                                                        "Performance & Load Testing",
-                                                        "Bug Reporting & Triage",
-                                                        "CI/CD Integration"),
-                                        30, 20)),
-
-                        Map.entry("Security Engineer", new TopicConfig(
-                                        List.of(
-                                                        "Application Security (OWASP)",
-                                                        "Network Security",
-                                                        "Threat Modeling",
-                                                        "Vulnerability Assessment",
-                                                        "Compliance & Governance"),
-                                        30, 20)));
-
-        public TopicConfig getConfig(String targetRole) {
-                return ROLE_CONFIGS.getOrDefault(targetRole, DEFAULT);
-        }
+    /**
+     * Whether the given target role has an assessment available in this version.
+     */
+    public boolean isAssessable(String targetRole) {
+        return ROLE_CONFIGS.containsKey(targetRole);
+    }
 }

@@ -12,6 +12,9 @@ import java.util.List;
  * AssessmentIntroResponse - The full response for GET /api/assessment/intro.
  * Aggregates profile data, resume analysis results, and the assessment configuration
  * derived from the user's target role.
+ *
+ * assessmentStatus is "AVAILABLE" when the target role has a curated assessment,
+ * or "COMING_SOON" for all other roles. When COMING_SOON, assessmentConfig is null.
  */
 @Data
 @Builder
@@ -26,5 +29,6 @@ public class AssessmentIntroResponse {
     private String fileName;
     private List<String> detectedSkills;
     private ExperienceLevel experienceLevel;
+    private String assessmentStatus;
     private AssessmentConfigDto assessmentConfig;
 }

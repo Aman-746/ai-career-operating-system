@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage'
 import OnboardingPage from './pages/OnboardingPage'
 import OnboardingResumePage from './pages/OnboardingResumePage'
 import AssessmentPage from './pages/AssessmentPage'
+import AssessmentQuizPage from './pages/AssessmentQuizPage'
 
 export default function App() {
   return (
@@ -36,6 +37,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AssessmentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessment/start"
+            element={
+              <ProtectedRoute>
+                <AssessmentQuizPage />
               </ProtectedRoute>
             }
           />
