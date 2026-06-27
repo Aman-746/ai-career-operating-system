@@ -59,3 +59,8 @@ app:
     expiration-ms: 86400000             # 24 hours in milliseconds
   resume:
     upload-dir: ${RESUME_UPLOAD_DIR:uploads/resumes}   # local-disk storage for now
+  ai-service:
+    enabled: true
+    base-url: ${AI_SERVICE_URL:http://localhost:8000}
+    connect-timeout-seconds: 5
+    read-timeout-seconds: 60

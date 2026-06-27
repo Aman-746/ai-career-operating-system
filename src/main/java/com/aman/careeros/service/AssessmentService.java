@@ -5,11 +5,13 @@ import com.aman.careeros.config.AssessmentRoleConfig.TopicConfig;
 import com.aman.careeros.dto.AssessmentConfigDto;
 import com.aman.careeros.dto.AssessmentIntroResponse;
 import com.aman.careeros.dto.AssessmentResultResponse;
+import com.aman.careeros.dto.GapAnalysis;
 import com.aman.careeros.dto.QuestionDto;
 import com.aman.careeros.dto.QuestionResultDto;
 import com.aman.careeros.dto.StartAssessmentResponse;
 import com.aman.careeros.dto.SubmitAnswersRequest;
 import com.aman.careeros.dto.SubmitAssessmentResponse;
+import com.aman.careeros.entity.GapAnalysisStatus;
 import com.aman.careeros.entity.AssessmentResponse;
 import com.aman.careeros.entity.AssessmentSession;
 import com.aman.careeros.entity.AssessmentTopic;
@@ -26,6 +28,7 @@ import com.aman.careeros.repository.OnboardingProfileRepository;
 import com.aman.careeros.repository.QuestionRepository;
 import com.aman.careeros.repository.ResumeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +57,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AssessmentService {
 
         private static final int QUESTIONS_PER_DIFFICULTY = 2;
@@ -64,6 +68,7 @@ public class AssessmentService {
         private final QuestionRepository questionRepository;
         private final AssessmentSessionRepository sessionRepository;
         private final AssessmentResponseRepository responseRepository;
+        private final GapAnalysisService gapAnalysisService;
 
         public AssessmentIntroResponse getIntro(User user) {
                 OnboardingProfile profile = profileRepository.findByUserId(user.getId())
@@ -153,10 +158,10 @@ public class AssessmentService {
 
                 // return questionRepository.findActiveByTopicAndDifficulty(topic, difficulty)
                 //                 .stream()
-                //                 .limit(QUESTIONS_PER_DIFFICULTY)
-                //                 .map(Question::getId)
-                //                 .toList();
-        }
+                // .limit(QUESTIONS_PER_DIFFICULTY)
+                // .map(Question::getId)
+                // .toList();
+        } 
 
         private StartAssessmentResponse buildStartResponse(AssessmentSession session) {
                 Map<UUID, Question> byId = questionRepository.findAllById(session.getQuestionIds())
@@ -272,16 +277,10 @@ public class AssessmentService {
                 return "WEAK";
         }
 
-        /**
-         * GET /api/assessment/result/{sessionId}
-         *
-         * Returns the full result for a COMPLETED session: aggregate scores,
-         * per-topic breakdown, and every question with the correct answer and
-         * explanation revealed. Results are ordered to match the original
-         * question plan so the frontend can paginate them by topic consistently.
-         */
-        @Transactional(readOnly = true)
+
+        @Transactional
         public AssessmentResultResponse getResult(User user, UUID sessionId) {
+
                 AssessmentSession session = sessionRepository.findByIdAndUserId(sessionId, user.getId())
                                 .orElseThrow(() -> new ResourceNotFoundException("Assessment session not found"));
 
@@ -327,6 +326,24 @@ public class AssessmentService {
                 int totalQuestions = responses.size();
                 int overallScore = totalQuestions == 0 ? 0 : (totalCorrect * 100) / totalQuestions;
 
+                // Lazy-generate on first fetch; serve from cache on repeat calls.
+                GapAnalysisStatus currentStatus = session.getGapAnalysisStatus();
+                if (currentStatus == null || currentStatus == GapAnalysisStatus.NONE) {
+                        try {
+                                GapAnalysis analysis = gapAnalysisService.generate(
+                                                session, user, responses, questionById);
+                                if (analysis != null) {
+                                        session.setGapAnalysis(analysis);
+                                        session.setGapAnalysisStatus(GapAnalysisStatus.READY);
+                                        sessionRepository.save(session);
+                                }
+                        } catch (Exception e) {
+                                log.warn("Gap analysis failed for session {}: {}", sessionId, e.getMessage());
+                                session.setGapAnalysisStatus(GapAnalysisStatus.FAILED);
+                                sessionRepository.save(session);
+                        }
+                }
+
                 return AssessmentResultResponse.builder()
                                 .sessionId(session.getId())
                                 .targetRole(session.getTargetRole())
@@ -336,6 +353,8 @@ public class AssessmentService {
                                 .overallScore(overallScore)
                                 .topicScores(session.getTopicScores())
                                 .questionResults(questionResults)
+                                .gapAnalysisStatus(session.getGapAnalysisStatus())
+                                .gapAnalysis(session.getGapAnalysis())
                                 .build();
         }
 }

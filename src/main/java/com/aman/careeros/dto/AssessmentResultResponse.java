@@ -1,6 +1,7 @@
 package com.aman.careeros.dto;
 
 import com.aman.careeros.entity.AssessmentSession;
+import com.aman.careeros.entity.GapAnalysisStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,6 @@ public class AssessmentResultResponse {
     private int overallScore;
     private List<AssessmentSession.TopicScore> topicScores;
     private List<QuestionResultDto> questionResults;
+    private GapAnalysisStatus gapAnalysisStatus;
+    private GapAnalysis gapAnalysis;
 }

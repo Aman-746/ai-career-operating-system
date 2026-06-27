@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.aman.careeros.dto.GapAnalysis;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -63,8 +65,13 @@ public class AssessmentSession {
     private List<TopicScore> topicScores;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private Object result;
+    @Column(name = "gap_analysis", columnDefinition = "jsonb")
+    private GapAnalysis gapAnalysis;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gap_analysis_status", length = 15)
+    @Builder.Default
+    private GapAnalysisStatus gapAnalysisStatus = GapAnalysisStatus.NONE;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -8,6 +8,7 @@ import OnboardingPage from './pages/OnboardingPage'
 import OnboardingResumePage from './pages/OnboardingResumePage'
 import AssessmentPage from './pages/AssessmentPage'
 import AssessmentQuizPage from './pages/AssessmentQuizPage'
+import AssessmentResultPage from './pages/AssessmentResultPage'
 
 export default function App() {
   return (
@@ -45,6 +46,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AssessmentQuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessment/result/:sessionId"
+            element={
+              <ProtectedRoute>
+                <AssessmentResultPage />
               </ProtectedRoute>
             }
           />
