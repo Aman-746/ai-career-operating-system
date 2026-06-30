@@ -468,17 +468,17 @@ function CtaSection({ navigate }) {
   return (
     <section className="flex flex-col gap-3 pb-4">
       <button
-        onClick={() => navigate('/dashboard')}
+        onClick={() => navigate('/roadmap')}
         className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
       >
-        Go to Dashboard
+        Generate my roadmap
         <ArrowRightIcon />
       </button>
       <button
-        onClick={() => navigate('/assessment')}
+        onClick={() => navigate('/dashboard')}
         className="w-full rounded-lg border border-neutral-700 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
       >
-        View Assessment Intro
+        Go to Dashboard
       </button>
     </section>
   )

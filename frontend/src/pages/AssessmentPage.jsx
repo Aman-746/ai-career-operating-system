@@ -174,6 +174,7 @@ function PageContent({ data, navigate }) {
     detectedSkills,
     experienceLevel,
     assessmentConfig,
+    completedSessionId,
   } = data
 
   const { topics, questionCount, estimatedMinutes, difficultyLevel } = assessmentConfig
@@ -322,28 +323,54 @@ function PageContent({ data, navigate }) {
 
       {/* Section D — CTA */}
       <section className="flex flex-col gap-3 pb-4">
-        <button
-          onClick={() => navigate('/assessment/start')}
-          className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
-        >
-          Start Assessment
-          <ArrowRightIcon />
-        </button>
-        <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={() => navigate('/onboarding')}
-            className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
-          >
-            Edit Profile
-          </button>
-          <span className="text-neutral-700 text-xs">|</span>
-          <button
-            onClick={() => navigate('/onboarding/resume')}
-            className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
-          >
-            Re-upload Resume
-          </button>
-        </div>
+        {completedSessionId ? (
+          <>
+            <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
+              <span className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
+                <CheckIcon className="w-2.5 h-2.5 text-emerald-400" />
+              </span>
+              <p className="text-sm text-emerald-300 font-medium">Assessment already completed</p>
+            </div>
+            <button
+              onClick={() => navigate(`/assessment/result/${completedSessionId}`)}
+              className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
+            >
+              View my results
+              <ArrowRightIcon />
+            </button>
+            <button
+              onClick={() => navigate('/roadmap')}
+              className="w-full rounded-lg border border-neutral-700 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
+            >
+              Go to my roadmap
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => navigate('/assessment/start')}
+              className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
+            >
+              Start Assessment
+              <ArrowRightIcon />
+            </button>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={() => navigate('/onboarding')}
+                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+              >
+                Edit Profile
+              </button>
+              <span className="text-neutral-700 text-xs">|</span>
+              <button
+                onClick={() => navigate('/onboarding/resume')}
+                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+              >
+                Re-upload Resume
+              </button>
+            </div>
+          </>
+        )}
       </section>
     </>
   )
@@ -367,9 +394,9 @@ function Skeleton({ className = '' }) {
   return <div className={`animate-pulse rounded bg-neutral-800 ${className}`} />
 }
 
-function CheckIcon() {
+function CheckIcon({ className = 'w-3 h-3' }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
     </svg>
   )

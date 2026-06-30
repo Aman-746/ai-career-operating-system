@@ -9,6 +9,8 @@ import OnboardingResumePage from './pages/OnboardingResumePage'
 import AssessmentPage from './pages/AssessmentPage'
 import AssessmentQuizPage from './pages/AssessmentQuizPage'
 import AssessmentResultPage from './pages/AssessmentResultPage'
+import RoadmapPage from './pages/RoadmapPage'
+import DailyUpdatePage from './pages/DailyUpdatePage'
 
 export default function App() {
   return (
@@ -54,6 +56,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AssessmentResultPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/roadmap"
+            element={
+              <ProtectedRoute>
+                <RoadmapPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/daily-updates"
+            element={
+              <ProtectedRoute>
+                <DailyUpdatePage />
               </ProtectedRoute>
             }
           />

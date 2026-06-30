@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * AssessmentIntroResponse - The full response for GET /api/assessment/intro.
@@ -31,4 +32,5 @@ public class AssessmentIntroResponse {
     private ExperienceLevel experienceLevel;
     private String assessmentStatus;
     private AssessmentConfigDto assessmentConfig;
+    private UUID completedSessionId;   // non-null when user already has a completed session
 }

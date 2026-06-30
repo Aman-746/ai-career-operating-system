@@ -22,4 +22,9 @@ public interface AssessmentSessionRepository extends JpaRepository<AssessmentSes
      * Ownership check — used by GET /result to prevent cross-user access.
      */
     Optional<AssessmentSession> findByIdAndUserId(UUID id, UUID userId);
+
+    /**
+     * Latest completed session — used by roadmap generation to load topicScores and gapAnalysis.
+     */
+    Optional<AssessmentSession> findTopByUserIdAndStatusOrderByCreatedAtDesc(UUID userId, Status status);
 }

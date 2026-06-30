@@ -88,6 +88,12 @@ public class AssessmentService {
                                 .difficultyLevel(difficulty)
                                 .build()).orElse(null);
 
+                UUID completedSessionId = sessionRepository
+                                .findTopByUserIdAndStatusOrderByCreatedAtDesc(
+                                                user.getId(), AssessmentSession.Status.COMPLETED)
+                                .map(AssessmentSession::getId)
+                                .orElse(null);
+
                 return AssessmentIntroResponse.builder()
                                 .userName(user.getName())
                                 .currentRole(profile.getCurrentRole())
@@ -99,6 +105,7 @@ public class AssessmentService {
                                 .experienceLevel(resume.getExperienceLevel())
                                 .assessmentStatus(assessmentStatus)
                                 .assessmentConfig(assessmentConfig)
+                                .completedSessionId(completedSessionId)
                                 .build();
         }
 
