@@ -78,12 +78,9 @@ export default function AssessmentPage() {
   }, [fetchIntro])
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex justify-center px-4 py-10 relative overflow-hidden">
-      <div className="absolute -top-10 -left-10 w-40 h-40 rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-      <div className="absolute -bottom-16 -right-10 w-56 h-56 -rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-
-      <div className="relative w-full max-w-2xl flex flex-col gap-5">
-        <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-neutral-950">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex items-center gap-2 mb-6">
           <span className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
             <span className="w-3 h-3 rounded-full bg-emerald-400" />
           </span>
@@ -91,9 +88,9 @@ export default function AssessmentPage() {
         </div>
 
         {loading ? (
-          <LoadingSkeleton />
+          <div className="max-w-lg mx-auto"><LoadingSkeleton /></div>
         ) : error ? (
-          <ErrorState error={error} navigate={navigate} onRetry={fetchIntro} />
+          <div className="max-w-lg mx-auto"><ErrorState error={error} navigate={navigate} onRetry={fetchIntro} /></div>
         ) : (
           <PageContent data={data} navigate={navigate} />
         )}
@@ -185,47 +182,102 @@ function PageContent({ data, navigate }) {
       : null
 
   return (
-    <>
-      {/* Section A — Hero */}
-      <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4">
-        <div className="flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full px-3 py-1">
-            <CheckIcon />
-            Resume uploaded
-          </span>
-          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full px-3 py-1">
-            <CheckIcon />
-            Resume analyzed
-          </span>
-        </div>
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
-        <div>
-          <h1 className="text-2xl font-semibold text-white">You're all set, {userName}.</h1>
-          <p className="text-sm text-neutral-400 mt-1">Your personalized assessment is ready.</p>
-        </div>
+      {/* ── Left: hero + CTA (sticky) ── */}
+      <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-6">
+        {/* Hero */}
+        <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full px-3 py-1">
+              <CheckIcon />
+              Resume uploaded
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full px-3 py-1">
+              <CheckIcon />
+              Resume analyzed
+            </span>
+          </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="bg-neutral-800 border border-neutral-700 text-white text-xs rounded-lg px-2.5 py-1">
-            {currentRole}
-          </span>
-          <span className="text-neutral-600 text-sm">→</span>
-          <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-lg px-2.5 py-1">
-            {targetRole}
-          </span>
-          {targetCompany && (
-            <span className="text-neutral-500 text-xs">@ {targetCompany}</span>
+          <div>
+            <h1 className="text-2xl font-semibold text-white">You're all set, {userName}.</h1>
+            <p className="text-sm text-neutral-400 mt-1">Your personalized assessment is ready.</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="bg-neutral-800 border border-neutral-700 text-white text-xs rounded-lg px-2.5 py-1">
+              {currentRole}
+            </span>
+            <span className="text-neutral-600 text-sm">→</span>
+            <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-lg px-2.5 py-1">
+              {targetRole}
+            </span>
+            {targetCompany && (
+              <span className="text-neutral-500 text-xs">@ {targetCompany}</span>
+            )}
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="flex flex-col gap-3">
+          {completedSessionId ? (
+            <>
+              <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
+                  <CheckIcon className="w-2.5 h-2.5 text-emerald-400" />
+                </span>
+                <p className="text-sm text-emerald-300 font-medium">Assessment already completed</p>
+              </div>
+              <button
+                onClick={() => navigate(`/assessment/result/${completedSessionId}`)}
+                className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
+              >
+                View my results
+                <ArrowRightIcon />
+              </button>
+              <button
+                onClick={() => navigate('/roadmap')}
+                className="w-full rounded-lg border border-neutral-700 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
+              >
+                Go to my roadmap
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate('/assessment/start')}
+                className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
+              >
+                Start Assessment
+                <ArrowRightIcon />
+              </button>
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={() => navigate('/onboarding')}
+                  className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+                >
+                  Edit Profile
+                </button>
+                <span className="text-neutral-700 text-xs">|</span>
+                <button
+                  onClick={() => navigate('/onboarding/resume')}
+                  className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+                >
+                  Re-upload Resume
+                </button>
+              </div>
+            </>
           )}
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {/* Section B — Two cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* ── Right: resume analysis + overview + unlocks ── */}
+      <div className="lg:col-span-3 flex flex-col gap-5">
         {/* Resume Analysis */}
         <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4">
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest">
             Resume Analysis
           </p>
-
           <div>
             <p className="text-xs text-neutral-500 mb-2">Skills Identified</p>
             {detectedSkills && detectedSkills.length > 0 ? (
@@ -245,7 +297,6 @@ function PageContent({ data, navigate }) {
               </span>
             )}
           </div>
-
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <span className="bg-neutral-800 border border-neutral-700 text-white text-xs rounded-lg px-2.5 py-1">
               {yearsOfExperience} yr{yearsOfExperience !== 1 ? 's' : ''} experience
@@ -263,30 +314,15 @@ function PageContent({ data, navigate }) {
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest">
             Assessment Overview
           </p>
-
           <div className="flex flex-col gap-3">
-            <StatRow
-              icon={<ClockIcon />}
-              label="Estimated time"
-              value={`${estimatedMinutes} minutes`}
-            />
-            <StatRow
-              icon={<QuestionIcon />}
-              label="Total questions"
-              value={`${questionCount} questions`}
-            />
-            <StatRow
-              icon={<BoltIcon />}
-              label="Difficulty level"
-              value={difficultyLabel}
-              valueClassName="text-emerald-400"
-            />
+            <StatRow icon={<ClockIcon />}    label="Estimated time"  value={`${estimatedMinutes} minutes`} />
+            <StatRow icon={<QuestionIcon />} label="Total questions" value={`${questionCount} questions`} />
+            <StatRow icon={<BoltIcon />}     label="Difficulty level" value={difficultyLabel} valueClassName="text-emerald-400" />
           </div>
-
           <div>
             <div className="h-px bg-neutral-800 mb-3" />
             <p className="text-xs text-neutral-500 mb-2.5">Topics Covered</p>
-            <ul className="flex flex-col gap-1.5">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {topics.map((topic) => (
                 <li key={topic} className="flex items-center gap-2 text-sm text-neutral-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/60 flex-shrink-0" />
@@ -296,83 +332,32 @@ function PageContent({ data, navigate }) {
             </ul>
           </div>
         </section>
+
+        {/* What You'll Unlock */}
+        <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6">
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest mb-4">
+            What You'll Unlock
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {UNLOCKS.map(({ icon, title, desc }) => (
+              <div
+                key={title}
+                className="flex gap-3 items-start bg-neutral-800/60 border border-neutral-700/40 rounded-xl p-4"
+              >
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-400">
+                  {icon}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">{title}</p>
+                  <p className="text-xs text-neutral-500 mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
 
-      {/* Section C — What You'll Unlock */}
-      <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6">
-        <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest mb-4">
-          What You'll Unlock
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {UNLOCKS.map(({ icon, title, desc }) => (
-            <div
-              key={title}
-              className="flex gap-3 items-start bg-neutral-800/60 border border-neutral-700/40 rounded-xl p-4"
-            >
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-400">
-                {icon}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{title}</p>
-                <p className="text-xs text-neutral-500 mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Section D — CTA */}
-      <section className="flex flex-col gap-3 pb-4">
-        {completedSessionId ? (
-          <>
-            <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
-                <CheckIcon className="w-2.5 h-2.5 text-emerald-400" />
-              </span>
-              <p className="text-sm text-emerald-300 font-medium">Assessment already completed</p>
-            </div>
-            <button
-              onClick={() => navigate(`/assessment/result/${completedSessionId}`)}
-              className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
-            >
-              View my results
-              <ArrowRightIcon />
-            </button>
-            <button
-              onClick={() => navigate('/roadmap')}
-              className="w-full rounded-lg border border-neutral-700 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
-            >
-              Go to my roadmap
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => navigate('/assessment/start')}
-              className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors flex items-center justify-center gap-2"
-            >
-              Start Assessment
-              <ArrowRightIcon />
-            </button>
-            <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={() => navigate('/onboarding')}
-                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
-              >
-                Edit Profile
-              </button>
-              <span className="text-neutral-700 text-xs">|</span>
-              <button
-                onClick={() => navigate('/onboarding/resume')}
-                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
-              >
-                Re-upload Resume
-              </button>
-            </div>
-          </>
-        )}
-      </section>
-    </>
+    </div>
   )
 }
 

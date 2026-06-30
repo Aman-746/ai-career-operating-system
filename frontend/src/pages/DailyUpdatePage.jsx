@@ -91,22 +91,22 @@ export default function DailyUpdatePage() {
   }).length
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-start justify-center px-4 py-10 relative overflow-hidden">
-      <div className="absolute -top-10 -left-10 w-40 h-40 rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-      <div className="absolute -bottom-16 -right-10 w-56 h-56 -rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
+    <div className="min-h-screen bg-neutral-950">
+      <div className="max-w-7xl mx-auto px-6 py-8">
 
-      <div className="relative w-full max-w-2xl flex flex-col gap-5">
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-6">
           <span className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
             <span className="w-3 h-3 rounded-full bg-emerald-400" />
           </span>
           <span className="text-white font-semibold tracking-wide">Career OS</span>
         </div>
 
-        {pageState === 'loading' && <LoadingSkeleton />}
+        {pageState === 'loading' && (
+          <div className="max-w-lg mx-auto"><LoadingSkeleton /></div>
+        )}
         {pageState === 'error' && (
-          <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4">
+          <div className="max-w-lg mx-auto bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4">
             <div className="rounded-lg bg-rose-500/10 border border-rose-500/30 px-4 py-3 text-sm text-rose-400">
               {error}
             </div>
@@ -119,17 +119,23 @@ export default function DailyUpdatePage() {
           </div>
         )}
         {pageState === 'ready' && (
-          <>
-            <StatsCard total={updates.length} hours={totalHoursAll} thisWeek={thisWeekCount} />
-            <LogCard
-              key={todayUpdate?.id ?? 'new'}
-              roadmapItems={roadmapItems}
-              existingUpdate={todayUpdate}
-              onSaved={onUpdateSaved}
-            />
-            <AnalysisCard analysis={analysis} onRefresh={setAnalysis} />
-            {updates.length > 0 && <HistorySection updates={updates} />}
-            <div className="pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+            {/* ── Left: log form ── */}
+            <div className="lg:col-span-3">
+              <LogCard
+                key={todayUpdate?.id ?? 'new'}
+                roadmapItems={roadmapItems}
+                existingUpdate={todayUpdate}
+                onSaved={onUpdateSaved}
+              />
+            </div>
+
+            {/* ── Right: stats + analysis + history ── */}
+            <div className="lg:col-span-2 flex flex-col gap-5">
+              <StatsCard total={updates.length} hours={totalHoursAll} thisWeek={thisWeekCount} />
+              <AnalysisCard analysis={analysis} onRefresh={setAnalysis} />
+              {updates.length > 0 && <HistorySection updates={updates} />}
               <button
                 onClick={() => navigate('/roadmap')}
                 className="w-full rounded-lg border border-neutral-700 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
@@ -137,7 +143,8 @@ export default function DailyUpdatePage() {
                 Back to roadmap
               </button>
             </div>
-          </>
+
+          </div>
         )}
       </div>
     </div>
@@ -260,8 +267,8 @@ function LogCard({ roadmapItems, existingUpdate, onSaved }) {
   // ── Summary view (logged, not editing) ──
   if (existingUpdate && !isEditing) {
     return (
-      <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6">
-        <div className="flex items-center justify-between gap-3 mb-4">
+      <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-5">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest">Today's Update</p>
             <p className="text-sm text-neutral-400 mt-0.5">{friendlyDate(today)}</p>
@@ -280,25 +287,30 @@ function LogCard({ roadmapItems, existingUpdate, onSaved }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <ClockIcon />
-            <span className="text-sm font-medium text-white">{existingUpdate.totalHours}h studied</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-1 border-t border-neutral-800">
+          {/* Left: hours + topics */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <ClockIcon />
+              <span className="text-sm font-medium text-white">{existingUpdate.totalHours}h studied</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {existingUpdate.items.map((item) => (
+                <span
+                  key={item.id}
+                  className={`text-xs border rounded-full px-2.5 py-1 ${CATEGORY_STYLE[item.category] ?? CATEGORY_STYLE['Other']}`}
+                >
+                  {item.topicName} · {item.hours}h
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {existingUpdate.items.map((item) => (
-              <span
-                key={item.id}
-                className={`text-xs border rounded-full px-2.5 py-1 ${CATEGORY_STYLE[item.category] ?? CATEGORY_STYLE['Other']}`}
-              >
-                {item.topicName} · {item.hours}h
-              </span>
-            ))}
-          </div>
+          {/* Right: notes */}
           {existingUpdate.notes && (
-            <p className="text-xs text-neutral-400 leading-relaxed border-t border-neutral-800 pt-3">
-              {existingUpdate.notes}
-            </p>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-xs text-neutral-500 font-medium">Notes</p>
+              <p className="text-sm text-neutral-400 leading-relaxed">{existingUpdate.notes}</p>
+            </div>
           )}
         </div>
       </section>
@@ -308,6 +320,7 @@ function LogCard({ roadmapItems, existingUpdate, onSaved }) {
   // ── Form view ──
   return (
     <section className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-5">
+      {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest">
@@ -330,54 +343,75 @@ function LogCard({ roadmapItems, existingUpdate, onSaved }) {
           Generate your roadmap first to see topics here.
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          <p className="text-xs text-neutral-500">Select topics you studied today</p>
-          {grouped.map((group) => (
-            <CategoryGroup
-              key={group.category}
-              group={group}
-              selected={selected}
-              onToggle={toggleItem}
-              onHoursChange={setHours}
-            />
-          ))}
+        /* 2-column form: topic picker left, notes + submit right */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+          {/* Left: topic picker */}
+          <div className="flex flex-col gap-4">
+            <p className="text-xs text-neutral-500">Select topics you studied today</p>
+            {grouped.map((group) => (
+              <CategoryGroup
+                key={group.category}
+                group={group}
+                selected={selected}
+                onToggle={toggleItem}
+                onHoursChange={setHours}
+              />
+            ))}
+          </div>
+
+          {/* Right: notes + summary + submit (sticky on large screens) */}
+          <div className="flex flex-col gap-4 lg:sticky lg:top-6">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs text-neutral-500">Notes (optional)</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="What clicked today? What was hard?"
+                rows={4}
+                className="w-full bg-neutral-800/60 border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-neutral-600 resize-none"
+              />
+            </div>
+
+            {selectedCount > 0 && (
+              <div className="flex flex-col gap-1.5 bg-neutral-800/40 rounded-lg px-4 py-3">
+                <p className="text-xs text-neutral-500 font-medium">Summary</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-white">{totalHours.toFixed(1)}h</span>
+                  <span className="text-xs text-neutral-600">across</span>
+                  <span className="text-sm font-semibold text-white">{selectedCount}</span>
+                  <span className="text-xs text-neutral-600">topic{selectedCount !== 1 ? 's' : ''}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {Object.keys(selected).map((id) => {
+                    const item = roadmapItems.find((i) => i.id === id)
+                    if (!item) return null
+                    return (
+                      <span key={id} className={`text-[10px] border rounded-full px-2 py-0.5 ${CATEGORY_STYLE[item.category] ?? CATEGORY_STYLE['Other']}`}>
+                        {item.topicName}
+                      </span>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {saveError && (
+              <div className="rounded-lg bg-rose-500/10 border border-rose-500/20 px-3 py-2.5 text-xs text-rose-400">
+                {saveError}
+              </div>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={saving || selectedCount === 0}
+              className="w-full rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              {saving ? 'Saving…' : existingUpdate ? 'Save changes' : 'Log update'}
+            </button>
+          </div>
         </div>
       )}
-
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-neutral-500">Notes (optional)</label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="What clicked today? What was hard?"
-          rows={2}
-          className="w-full bg-neutral-800/60 border border-neutral-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-neutral-600 resize-none"
-        />
-      </div>
-
-      {selectedCount > 0 && (
-        <div className="flex items-center gap-3 bg-neutral-800/40 rounded-lg px-4 py-2.5">
-          <span className="text-xs text-neutral-400">
-            {selectedCount} topic{selectedCount !== 1 ? 's' : ''} selected
-          </span>
-          <span className="text-xs text-neutral-700">·</span>
-          <span className="text-xs font-medium text-white">{totalHours.toFixed(1)}h total</span>
-        </div>
-      )}
-
-      {saveError && (
-        <div className="rounded-lg bg-rose-500/10 border border-rose-500/20 px-3 py-2.5 text-xs text-rose-400">
-          {saveError}
-        </div>
-      )}
-
-      <button
-        onClick={handleSubmit}
-        disabled={saving || selectedCount === 0}
-        className="w-full rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      >
-        {saving ? 'Saving…' : existingUpdate ? 'Save changes' : 'Log update'}
-      </button>
     </section>
   )
 }

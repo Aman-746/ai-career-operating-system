@@ -77,12 +77,9 @@ export default function AssessmentResultPage() {
   }, [sessionId])
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex justify-center px-4 py-10 relative overflow-hidden">
-      <div className="absolute -top-10 -left-10 w-40 h-40 rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-      <div className="absolute -bottom-16 -right-10 w-56 h-56 -rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-
-      <div className="relative w-full max-w-2xl flex flex-col gap-5">
-        <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-neutral-950">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex items-center gap-2 mb-6">
           <span className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
             <span className="w-3 h-3 rounded-full bg-emerald-400" />
           </span>
@@ -90,9 +87,9 @@ export default function AssessmentResultPage() {
         </div>
 
         {loading ? (
-          <LoadingSkeleton />
+          <div className="max-w-lg mx-auto"><LoadingSkeleton /></div>
         ) : error ? (
-          <ErrorState message={error} navigate={navigate} />
+          <div className="max-w-lg mx-auto"><ErrorState message={error} navigate={navigate} /></div>
         ) : (
           <PageContent data={data} navigate={navigate} />
         )}
@@ -153,15 +150,24 @@ function PageContent({ data, navigate }) {
   const topicGroups = groupByTopic(data.questionResults ?? [])
 
   return (
-    <>
-      <HeroCard data={data} />
-      <TopicBreakdown topicScores={data.topicScores ?? []} />
-      <QuestionReview groups={topicGroups} />
-      {data.gapAnalysisStatus === 'READY' && data.gapAnalysis && (
-        <GapAnalysisCard analysis={data.gapAnalysis} />
-      )}
-      <CtaSection navigate={navigate} />
-    </>
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+      {/* ── Left: score + topic summary + CTAs (sticky) ── */}
+      <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-6">
+        <HeroCard data={data} />
+        <TopicBreakdown topicScores={data.topicScores ?? []} />
+        <CtaSection navigate={navigate} />
+      </div>
+
+      {/* ── Right: question review + gap analysis ── */}
+      <div className="lg:col-span-3 flex flex-col gap-5">
+        <QuestionReview groups={topicGroups} />
+        {data.gapAnalysisStatus === 'READY' && data.gapAnalysis && (
+          <GapAnalysisCard analysis={data.gapAnalysis} />
+        )}
+      </div>
+
+    </div>
   )
 }
 

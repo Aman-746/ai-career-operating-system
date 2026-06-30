@@ -97,16 +97,18 @@ export default function RoadmapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-start justify-center px-4 py-10 relative overflow-hidden">
-      <div className="absolute -top-10 -left-10 w-40 h-40 rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-      <div className="absolute -bottom-16 -right-10 w-56 h-56 -rotate-12 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] bg-gradient-to-br from-neutral-700 to-neutral-900" />
-
-      <div className="relative w-full max-w-2xl">
+    <div className="min-h-screen bg-neutral-950">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <Logo />
 
-        {pageState === 'loading' && <LoadingSkeleton />}
-        {pageState === 'generating' && <GeneratingView />}
-        {pageState === 'error' && <ErrorState message={error} onRetry={loadOrGenerate} navigate={navigate} />}
+        {(pageState === 'loading' || pageState === 'generating' || pageState === 'error') && (
+          <div className="max-w-lg mx-auto">
+            {pageState === 'loading'    && <LoadingSkeleton />}
+            {pageState === 'generating' && <GeneratingView />}
+            {pageState === 'error'      && <ErrorState message={error} onRetry={loadOrGenerate} navigate={navigate} />}
+          </div>
+        )}
+
         {pageState === 'roadmap' && roadmap && (
           <RoadmapView
             roadmap={roadmap}
@@ -205,16 +207,17 @@ function ErrorState({ message, onRetry, navigate }) {
 
 function RoadmapView({ roadmap, onToggleItem, confirmRegen, onRequestRegen, onCancelRegen, onConfirmRegen, navigate }) {
   return (
-    <div className="flex flex-col gap-5">
-      <HeroCard
-        roadmap={roadmap}
-        confirmRegen={confirmRegen}
-        onRequestRegen={onRequestRegen}
-        onCancelRegen={onCancelRegen}
-        onConfirmRegen={onConfirmRegen}
-      />
-      <WeekList weeks={roadmap.weeks} onToggleItem={onToggleItem} />
-      <div className="flex flex-col gap-3 pb-4">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+      {/* ── Left: sticky sidebar ── */}
+      <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-6">
+        <HeroCard
+          roadmap={roadmap}
+          confirmRegen={confirmRegen}
+          onRequestRegen={onRequestRegen}
+          onCancelRegen={onCancelRegen}
+          onConfirmRegen={onConfirmRegen}
+        />
         <button
           onClick={() => navigate('/daily-updates')}
           className="w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
@@ -229,6 +232,12 @@ function RoadmapView({ roadmap, onToggleItem, confirmRegen, onRequestRegen, onCa
           Back to dashboard
         </button>
       </div>
+
+      {/* ── Right: scrollable week list ── */}
+      <div className="lg:col-span-3">
+        <WeekList weeks={roadmap.weeks} onToggleItem={onToggleItem} />
+      </div>
+
     </div>
   )
 }
