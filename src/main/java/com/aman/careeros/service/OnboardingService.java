@@ -39,7 +39,6 @@ public class OnboardingService {
 
     private final OnboardingProfileRepository onboardingProfileRepository;
     private final ResumeRepository resumeRepository;
-    private final FileStorageService fileStorageService;
     private final ResumeAnalysisService resumeAnalysisService;
 
     /**
@@ -85,19 +84,17 @@ public class OnboardingService {
         OnboardingProfile profile = onboardingProfileRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new InvalidRequestException("Please complete your profile before uploading a resume"));
 
-        String storagePath = fileStorageService.store(file, user.getId(), extension);
-
         Resume resume = resumeRepository.findTopByUserIdOrderByUploadedAtDesc(user.getId())
                 .orElseGet(() -> Resume.builder().user(user).build());
 
         resume.setOriginalFilename(file.getOriginalFilename());
-        resume.setStoragePath(storagePath);
+        resume.setStoragePath(file.getOriginalFilename());
         resume.setContentType(file.getContentType());
         resume.setFileSizeBytes(file.getSize());
         resume.setDetectedSkills(null);
         resume.setExperienceLevel(null);
 
-        resumeAnalysisService.analyzeAndPopulate(resume, profile.getYearsOfExperience());
+        resumeAnalysisService.analyzeAndPopulate(resume, file, profile.getYearsOfExperience());
         resumeRepository.save(resume);
 
         profile.setStatus(OnboardingStatus.COMPLETED);

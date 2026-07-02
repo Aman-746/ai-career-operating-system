@@ -64,3 +64,5 @@ app:
     base-url: ${AI_SERVICE_URL:http://localhost:8000}
     connect-timeout-seconds: 5
     read-timeout-seconds: 60
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173}
