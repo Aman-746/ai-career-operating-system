@@ -39,8 +39,11 @@ export default function AssessmentQuizPage() {
   const [submitting, setSubmitting] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(null)
   const timerRef = useRef(null)
+  const sessionStarted = useRef(false)
 
   useEffect(() => {
+    if (sessionStarted.current) return
+    sessionStarted.current = true
     api
       .post('/api/assessment/start')
       .then((r) => {
