@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../services/api'
 
@@ -31,8 +31,13 @@ export default function RoadmapPage() {
   const [roadmap, setRoadmap] = useState(null)
   const [error, setError] = useState('')
   const [confirmRegen, setConfirmRegen] = useState(false)
+  const initialLoadStarted = useRef(false)
 
-  useEffect(() => { loadOrGenerate() }, [])
+  useEffect(() => {
+    if (initialLoadStarted.current) return
+    initialLoadStarted.current = true
+    loadOrGenerate()
+  }, [])
 
   async function loadOrGenerate() {
     setPageState('loading')

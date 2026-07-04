@@ -10,6 +10,50 @@ from schemas.roadmap import (
     RoadmapResponse,
 )
 
+# Built by hand instead of passing the GeminiRoadmapOutput class directly:
+# google-generativeai's automatic Pydantic -> Gemini schema conversion
+# (content_types.add_object_type) strips the "required" array from every
+# nested object, so Gemini is never told that `items` is mandatory on a
+# week and sometimes returns a week with only `weekNumber`. A plain dict
+# schema skips that lossy conversion and keeps "required" intact.
+ROADMAP_RESPONSE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "weeks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "weekNumber": {"type": "integer"},
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "topicName": {"type": "string"},
+                                "category": {
+                                    "type": "string",
+                                    "enum": [
+                                        "DSA",
+                                        "System Design",
+                                        "Behavioral",
+                                        "Language/Framework",
+                                        "Other",
+                                    ],
+                                },
+                            },
+                            "required": ["topicName", "category"],
+                        },
+                    },
+                },
+                "required": ["weekNumber", "items"],
+            },
+        },
+        "rationale": {"type": "string"},
+    },
+    "required": ["weeks", "rationale"],
+}
+
 SYSTEM_INSTRUCTION = """You are a senior software engineering interview coach and curriculum designer.
 
 Your task: Create a week-by-week study roadmap for a software engineer preparing for a specific target role.
@@ -23,7 +67,23 @@ Rules:
 - Keep topic names specific and actionable (e.g. "Arrays & Hashing", "Binary Search Trees", "SQL Joins & Indexes", "System Design: Caching", "STAR Behavioral Storytelling").
 - category must be exactly one of: DSA, System Design, Behavioral, Language/Framework, Other.
 - The rationale must be 2–3 sentences explaining the overall strategy: which areas are prioritized and why.
-- Do not add padding. Every item must represent real, meaningful study work."""
+- Do not add padding. Every item must represent real, meaningful study work.
+- The response MUST strictly conform to the provided JSON schema.
+- Return exactly `total_weeks` week objects in the `weeks` array.
+- Every week object MUST contain both:
+ - `weekNumber`
+ - `items`
+- The `items` field MUST always be present and MUST be an array.
+- Every week must contain between 2 and 5 items. Never return an empty week.
+- Never omit required fields, even if a week has fewer recommended topics.
+ Each item MUST contain:
+  - `topicName`
+  - `category`
+- `category` must be exactly one of: `DSA`, `System Design`, `Behavioral`, `Language/Framework`, `Other`.
+- Ensure all week numbers are sequential starting from 1.
+- Before finalizing the response, verify that every week contains an `items` array with 2–5 valid study items.
+- CRITICAL: Do not output a week object containing only weekNumber. Every week must include a non-empty items array.
+"""
 
 
 def _build_user_prompt(req: RoadmapRequest) -> str:
@@ -82,11 +142,14 @@ def generate_roadmap(req: RoadmapRequest) -> RoadmapResponse:
         generation_config=genai.GenerationConfig(
             temperature=settings.gemini_temperature,
             response_mime_type="application/json",
-            response_schema=GeminiRoadmapOutput,
+            response_schema=ROADMAP_RESPONSE_SCHEMA,
         ),
     )
 
     response = model.generate_content(_build_user_prompt(req))
+    print("RAW GEMINI RESPONSE")
+    print(response.candidates[0].finish_reason)
+
     parsed = GeminiRoadmapOutput.model_validate_json(response.text)
 
     return RoadmapResponse(

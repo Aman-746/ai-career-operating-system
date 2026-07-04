@@ -251,6 +251,15 @@ public class DailyUpdateService {
                         .hours(req.hours())
                         .build())
                 .toList();
+
+        List<RoadmapItem> newlyCompleted = byId.values().stream()
+                .filter(item -> item.getStatus() != RoadmapItem.Status.COMPLETED)
+                .peek(item -> item.setStatus(RoadmapItem.Status.COMPLETED))
+                .toList();
+        if (!newlyCompleted.isEmpty()) {
+            roadmapItemRepository.saveAll(newlyCompleted);
+        }
+
         return dailyUpdateItemRepository.saveAll(items);
     }
 

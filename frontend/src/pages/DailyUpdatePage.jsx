@@ -73,12 +73,18 @@ export default function DailyUpdatePage() {
     }
   }
 
-  function onUpdateSaved(update) {
+  async function onUpdateSaved(update) {
     setUpdates((prev) => {
       const idx = prev.findIndex((u) => u.date === update.date)
       if (idx >= 0) return prev.map((u, i) => (i === idx ? update : u))
       return [update, ...prev].sort((a, b) => b.date.localeCompare(a.date))
     })
+    try {
+      const r = await api.get('/api/daily-updates/analysis')
+      setAnalysis(r.data)
+    } catch {
+      // non-critical; user can still hit the manual refresh in AnalysisCard
+    }
   }
 
   const today = todayIso()
