@@ -326,7 +326,7 @@ function PageContent({ data, navigate }) {
               {topics.map((topic) => (
                 <li key={topic} className="flex items-center gap-2 text-sm text-neutral-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/60 flex-shrink-0" />
-                  {topic}
+                  {topic.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}
                 </li>
               ))}
             </ul>
