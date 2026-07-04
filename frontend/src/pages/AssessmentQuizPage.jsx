@@ -75,7 +75,6 @@ export default function AssessmentQuizPage() {
   const isLast = currentIdx === totalQuestions - 1
   const hasAnsweredCurrent = !!answers[current.id]
 
-  // Ordered unique topics (preserves question order)
   const topics = [...new Set(questions.map((q) => q.topic))]
   const topicStartIdx = (t) => topics.indexOf(t) * QS_PER_TOPIC
   const currentTopic = current.topic
@@ -105,7 +104,6 @@ export default function AssessmentQuizPage() {
 
   async function submit() {
     if (submitting) return
-    // Guard: jump to first unanswered if navigator was used to skip
     const firstSkipped = questions.findIndex((q) => !answers[q.id])
     if (firstSkipped !== -1) {
       setCurrentIdx(firstSkipped)
@@ -126,39 +124,49 @@ export default function AssessmentQuizPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 flex flex-col font-sans">
+
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 border-b border-neutral-800 bg-neutral-900/90 backdrop-blur-sm">
-        <div className="max-w-[1440px] mx-auto px-5 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+        <div className="max-w-[1440px] mx-auto px-4 h-13 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
             </span>
-            <span className="text-white font-semibold tracking-wide text-sm">Career OS</span>
+            <span className="text-white font-semibold tracking-wide text-sm hidden sm:block">Career OS</span>
           </div>
+
+          {/* Mobile: timer inline in header */}
+          {secondsLeft !== null && (
+            <div className="flex items-center gap-1.5 lg:hidden">
+              <span className={`text-sm font-mono font-bold tabular-nums ${secondsLeft < 120 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                {formatTime(secondsLeft)}
+              </span>
+            </div>
+          )}
+
           <button
             onClick={() => navigate('/assessment')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-neutral-400 border border-neutral-700 rounded-lg hover:text-rose-400 hover:border-rose-500/50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-neutral-400 border border-neutral-700 rounded-lg hover:text-rose-400 hover:border-rose-500/50 transition-colors flex-shrink-0"
           >
             <ExitIcon />
-            Exit Assessment
+            <span className="hidden sm:inline">Exit Assessment</span>
+            <span className="sm:hidden">Exit</span>
           </button>
         </div>
       </header>
 
       {/* ── Progress strip ── */}
       <div className="border-b border-neutral-800 bg-neutral-900/60">
-        <div className="max-w-[1440px] mx-auto px-5 py-3 flex items-center gap-5">
-          {/* Progress % + timer side-by-side */}
-          <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="max-w-[1440px] mx-auto px-4 py-2.5 flex items-center gap-3">
+          {/* Progress % + timer — desktop only */}
+          <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
             <div>
               <p className="text-2xl font-bold text-white leading-none">{progressPct}%</p>
               <p className="text-xs text-neutral-500 mt-0.5">Overall progress</p>
             </div>
             {secondsLeft !== null && (
               <div className="border-l border-neutral-700 pl-4">
-                <p className={`text-xl font-mono font-bold leading-none tabular-nums ${
-                  secondsLeft < 120 ? 'text-rose-400' : 'text-emerald-400'
-                }`}>
+                <p className={`text-xl font-mono font-bold leading-none tabular-nums ${secondsLeft < 120 ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {formatTime(secondsLeft)}
                 </p>
                 <p className="text-xs text-neutral-500 mt-0.5">time left</p>
@@ -166,35 +174,39 @@ export default function AssessmentQuizPage() {
             )}
           </div>
 
+          {/* Mobile: compact left label */}
+          <div className="lg:hidden flex-shrink-0">
+            <span className="text-sm font-bold text-white">{progressPct}%</span>
+          </div>
+
           {/* Bar */}
           <div className="flex-1">
-            <div className="h-2.5 bg-neutral-800 rounded-full overflow-hidden">
+            <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-500"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <p className="text-xs text-neutral-500 mt-1.5 text-center">
-              {answeredCount} of {totalQuestions} questions answered
+            <p className="text-xs text-neutral-500 mt-1 text-center">
+              {answeredCount} / {totalQuestions} answered
             </p>
           </div>
 
-          <div className="min-w-[80px] text-right flex-shrink-0">
+          <div className="hidden lg:block min-w-[80px] text-right flex-shrink-0">
             <p className="text-sm font-semibold text-white">{totalQuestions - answeredCount}</p>
             <p className="text-xs text-neutral-500">remaining</p>
           </div>
         </div>
       </div>
 
-      {/* ── Three-column body ── */}
-      <div className="flex-1 max-w-[1440px] mx-auto w-full px-4 py-5 grid grid-cols-[210px_1fr_196px] gap-4">
+      {/* ── Body ── */}
+      <div className="flex-1 max-w-[1440px] mx-auto w-full px-3 py-4 lg:px-4 lg:py-5 grid grid-cols-1 lg:grid-cols-[210px_1fr_196px] gap-4">
 
-        {/* ── Left: Topics ── */}
-        <aside className="flex flex-col gap-2">
+        {/* ── Left: Topics (desktop only) ── */}
+        <aside className="hidden lg:flex flex-col gap-2">
           <p className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest px-1 mb-0.5">
             Topics
           </p>
-
           {topics.map((topic) => {
             const done = answeredInTopic(topic)
             const pct = Math.round((done / QS_PER_TOPIC) * 100)
@@ -221,8 +233,6 @@ export default function AssessmentQuizPage() {
               </button>
             )
           })}
-
-          {/* Motivational card */}
           <div className="mt-auto pt-3">
             <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-xl p-4 text-center">
               <div className="text-xl mb-1">🏆</div>
@@ -237,36 +247,35 @@ export default function AssessmentQuizPage() {
         {/* ── Center: Question panel ── */}
         <main className="bg-neutral-900/80 border border-neutral-800 rounded-2xl flex flex-col overflow-hidden">
           {/* Topic header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-            <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wide">
+          <div className="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4 border-b border-neutral-800">
+            <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wide truncate pr-2">
               {TOPIC_DISPLAY[currentTopic] ?? currentTopic}
             </span>
-            <span className="text-xs text-neutral-500">
-              Question {questionInTopic} of {QS_PER_TOPIC}
+            <span className="text-xs text-neutral-500 flex-shrink-0">
+              Q{questionInTopic}/{QS_PER_TOPIC}
             </span>
           </div>
 
           {/* Question body */}
-          <div className="flex-1 px-6 py-6 flex flex-col gap-6 overflow-y-auto">
+          <div className="flex-1 px-4 py-5 lg:px-6 lg:py-6 flex flex-col gap-5 overflow-y-auto">
             <div>
-              <p className="text-xs text-neutral-500 mb-3">Select one option</p>
-              <h2 className="text-xl font-semibold text-white leading-relaxed">{current.stem}</h2>
+              <p className="text-xs text-neutral-500 mb-2">Select one option</p>
+              <h2 className="text-base lg:text-xl font-semibold text-white leading-relaxed">{current.stem}</h2>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5 lg:gap-3">
               {current.options.map((opt) => {
                 const selected = answers[current.id] === opt.id
                 return (
                   <button
                     key={opt.id}
                     onClick={() => selectAnswer(opt.id)}
-                    className={`flex items-center gap-4 w-full text-left px-4 py-3.5 rounded-xl border transition-all ${
+                    className={`flex items-center gap-3 w-full text-left px-3 py-3 lg:px-4 lg:py-3.5 rounded-xl border transition-all ${
                       selected
                         ? 'border-emerald-500 bg-emerald-500/10'
                         : 'border-neutral-700 bg-neutral-800/40 hover:border-neutral-600 hover:bg-neutral-800'
                     }`}
                   >
-                    {/* Radio circle */}
                     <span
                       className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
                         selected ? 'border-emerald-400' : 'border-neutral-600'
@@ -274,16 +283,12 @@ export default function AssessmentQuizPage() {
                     >
                       {selected && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
                     </span>
-
-                    {/* Letter badge */}
                     <span
-                      className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center flex-shrink-0 uppercase ${OPTION_BADGE[opt.id] ?? ''}`}
+                      className={`w-6 h-6 lg:w-7 lg:h-7 rounded-lg text-xs font-bold flex items-center justify-center flex-shrink-0 uppercase ${OPTION_BADGE[opt.id] ?? ''}`}
                     >
                       {opt.id}
                     </span>
-
-                    {/* Option text */}
-                    <span className={`text-sm ${selected ? 'text-white font-medium' : 'text-neutral-300'}`}>
+                    <span className={`text-sm leading-snug ${selected ? 'text-white font-medium' : 'text-neutral-300'}`}>
                       {opt.text}
                     </span>
                   </button>
@@ -297,45 +302,74 @@ export default function AssessmentQuizPage() {
             </div>
           </div>
 
+          {/* Mobile: compact question dot navigator */}
+          <div className="lg:hidden px-4 py-3 border-t border-neutral-800">
+            <div className="overflow-x-auto pb-1">
+              <div className="flex gap-1.5 w-max">
+                {questions.map((q, i) => {
+                  const isAnswered = !!answers[q.id]
+                  const isCurrent = i === currentIdx
+                  return (
+                    <button
+                      key={q.id}
+                      onClick={() => goTo(i)}
+                      className={`w-7 h-7 text-[10px] font-medium rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
+                        isCurrent
+                          ? 'ring-2 ring-emerald-500 ring-offset-1 ring-offset-neutral-900 bg-neutral-700 text-white'
+                          : isAnswered
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : 'bg-neutral-800 text-neutral-500'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Navigation footer */}
-          <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between">
+          <div className="px-4 py-3 lg:px-6 lg:py-4 border-t border-neutral-800 flex items-center justify-between gap-2">
             <button
               onClick={() => goTo(currentIdx - 1)}
               disabled={currentIdx === 0}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-300 border border-neutral-700 rounded-lg hover:border-neutral-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 lg:px-4 text-sm font-medium text-neutral-300 border border-neutral-700 rounded-lg hover:border-neutral-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               <ArrowLeftIcon />
-              Previous
+              <span className="hidden sm:inline">Previous</span>
             </button>
 
             {!hasAnsweredCurrent && (
-              <span className="text-xs text-neutral-600">Select an option to continue</span>
+              <span className="text-xs text-neutral-600 text-center hidden sm:block">Select an option to continue</span>
             )}
 
             <button
               onClick={handleNext}
               disabled={!hasAnsweredCurrent || submitting}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-medium bg-white text-neutral-900 rounded-lg hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 lg:px-5 text-sm font-medium bg-white text-neutral-900 rounded-lg hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {submitting ? (
                 <>
                   <span className="w-3.5 h-3.5 border-2 border-neutral-400 border-t-neutral-900 rounded-full animate-spin" />
-                  Submitting…
+                  <span className="hidden sm:inline">Submitting…</span>
                 </>
               ) : isLast ? (
-                'Submit Assessment'
+                <span>Submit</span>
               ) : (
-                <>Next <ArrowRightIcon /></>
+                <>
+                  <span className="hidden sm:inline">Next</span>
+                  <ArrowRightIcon />
+                </>
               )}
             </button>
           </div>
         </main>
 
-        {/* ── Right: Navigator ── */}
-        <aside className="flex flex-col gap-3">
+        {/* ── Right: Navigator (desktop only) ── */}
+        <aside className="hidden lg:flex flex-col gap-3">
           <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
             <p className="text-xs font-semibold text-neutral-400">Question Navigator</p>
-
             <div className="grid grid-cols-6 gap-1">
               {questions.map((q, i) => {
                 const isAnswered = !!answers[q.id]
@@ -358,45 +392,28 @@ export default function AssessmentQuizPage() {
                 )
               })}
             </div>
-
-            {/* Legend */}
             <div className="pt-2 border-t border-neutral-800 flex flex-col gap-1.5">
-              <p className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-0.5">
-                Legend
-              </p>
+              <p className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-0.5">Legend</p>
               <LegendRow dotClass="bg-emerald-500/20 border border-emerald-500/30" label="Answered" />
               <LegendRow dotClass="ring-2 ring-emerald-500 bg-neutral-700" label="Current" />
               <LegendRow dotClass="bg-neutral-800 border border-neutral-700" label="Not answered" />
             </div>
           </div>
-
-          {/* Stats */}
           <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-2.5">
-            <StatRow
-              dot="bg-neutral-600"
-              label="Total"
-              value={totalQuestions}
-            />
-            <StatRow
-              dot="bg-emerald-500"
-              label="Answered"
-              value={answeredCount}
-            />
-            <StatRow
-              dot="bg-neutral-700"
-              label="Remaining"
-              value={totalQuestions - answeredCount}
-            />
+            <StatRow dot="bg-neutral-600" label="Total" value={totalQuestions} />
+            <StatRow dot="bg-emerald-500" label="Answered" value={answeredCount} />
+            <StatRow dot="bg-neutral-700" label="Remaining" value={totalQuestions - answeredCount} />
           </div>
         </aside>
       </div>
 
       {/* ── Status bar ── */}
       <div className="border-t border-neutral-800 bg-neutral-900/50">
-        <div className="max-w-[1440px] mx-auto px-5 h-10 flex items-center justify-center">
+        <div className="max-w-[1440px] mx-auto px-4 h-10 flex items-center justify-center">
           <div className="flex items-center gap-2 text-xs text-neutral-600">
             <ShieldIcon />
-            Every answer helps us build a more personalized roadmap toward your target role.
+            <span className="hidden sm:inline">Every answer helps us build a more personalized roadmap toward your target role.</span>
+            <span className="sm:hidden">Answers build your personalized roadmap.</span>
           </div>
         </div>
       </div>
